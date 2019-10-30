@@ -22,31 +22,27 @@ object Model {
     }
     }
      */
+
+//    var end: Int = 0
+//    var info: Block? = null
+
+
     data class Block(
         var jobId: Int,
-        var clientId: Int,
-        var BlockHeader: Header
+        var clientId: Int?,
+        var blockHeader: Header
 
     )
+
+
     data class Header(
-         var end: Int,
-         var difficulty: Int,
-         var prevBlockhash: String?,
-         var merkleRoot: String?,
-         var timestamp: String?,
-         var version: Int,
-         var Nonce: Int)
+        var version: Long,
+        var prevBlockhash: String,
+        var merkleRoot: String,
+        var timestamp: String,
+        var difficultyTarget: Int,
+        var Nonce: Long
 
-//    data class Nonce(val curnonce: Int)
-
-
-//    private var difficulty: Int,
-//    private var prevBlockhash: String?,
-//    private var merkleRoot: String?,
-//    private var timestamp: String?,
-//    private var version: Int
-
-    // translate json to class Block
-
+        )
 
 }

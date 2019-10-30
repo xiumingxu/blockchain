@@ -11,17 +11,21 @@ import retrofit2.http.GET
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.http.Query
 
-interface ApiService {
+interface BlockAPIService {
 
+    // Definition: get http request to [/work]
     @GET("work")
-    fun retrieveData(): Observable<Model.Block>
+    fun getBlockHeader(): Observable<Model.Block>
 
-    companion object {
 
-        // generates your retrofit service
-        fun create(): ApiService {
+
+    // Companion object to create the BLOCKAPI service
+
+    companion object Factory {
+
+        // Generates retrofit service
+        fun create(): BlockAPIService {
 
             val retrofit = Retrofit.Builder()
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
@@ -29,7 +33,7 @@ interface ApiService {
                 .baseUrl("http://10.0.2.2:3000/")
                 .build()
 
-            return retrofit.create(ApiService::class.java)
+            return retrofit.create(BlockAPIService::class.java)
         }
     }
 

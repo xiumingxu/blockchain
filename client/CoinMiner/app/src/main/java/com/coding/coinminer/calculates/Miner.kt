@@ -5,11 +5,12 @@
 
 package com.coding.coinminer.calculates
 
+import android.util.Log
 import com.coding.coinminer.utils.HashUtil
-import org.json.JSONObject
+import com.coding.coinminer.data.Model
 
 class Miner{
-
+    // Multithread running Miner
 
     /**
      * {
@@ -26,33 +27,38 @@ class Miner{
         }
      */
 
-    private var end: Int
-    private var block: JSONObject
-    private var nonce:Int
+    private var version: Long
+    private var prevBlockhash: String
+    private var merkleRoot: String
+    private var timestamp: String
     private var difficulty: Int
+    private var Nonce: Long
 
 
-    constructor(input: JSONObject, range: IntArray, difficulty:Int){
-        this.block =  input
-        this.end = range[1]
-        this.nonce = range[0]
-        this.difficulty = difficulty
+    constructor(b: Model.Header){
+        version = b.version
+        prevBlockhash = b.prevBlockhash
+        merkleRoot = b.merkleRoot
+        difficulty =  b.difficultyTarget
+        Nonce = b.Nonce
+        timestamp = b.timestamp
     }
-
 
     fun run(){
-        while(nonce < end ){
-            if (isHashValid(calculateHash()))
-                break
-//                return setToServer
-
-            nonce++;
-        }
+        Log.d("one thread miner", "one miner")
     }
 
-    /**
-     * Returns the hash result string after sha256
-     */
+//    fun run(){
+//        while(nonce < end ){
+//            if (isHashValid(calculateHash()))
+//                break
+////                return setToServer
+//
+//            nonce++;
+//        }
+//    }
+
+    // Returns the hash result string after sha256
     fun calculateHash():String{
 
         return HashUtil.sha256(calculateBlockHash());
@@ -63,14 +69,14 @@ class Miner{
      */
     fun calculateBlockHash(): String{
         // TODO produce the new content
-        //	record := string(block.Index) + block.Timestamp + string(block.BPM) + block.PrevHash
-        return block.toString() + nonce + ""
+//        	record := string(block.Index) + block.Timestamp + string(block.BPM) + block.PrevHash
+//        return block.toString() + nonce + ""
+        return ""
     }
 
 
-    /**
-     * Returns the hash content based on content and nonce
-     */
+
+    // Returns the hash content based on content and nonce
     fun isHashValid(hash: String): Boolean {
         var prefix = "0".repeat(this.difficulty)
         return hash.startsWith(prefix)

@@ -3,23 +3,21 @@ package com.coding.coinminer
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import com.coding.coinminer.data.ApiService
-import com.coding.coinminer.data.Request
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
+import com.coding.coinminer.calculates.Miner
+import com.coding.coinminer.data.Model
+import com.coding.coinminer.data.RepositoryProvider
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
-import org.jetbrains.anko.doAsync
-import org.jetbrains.anko.toast
-import org.jetbrains.anko.uiThread
+import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
 
-    // global variable for retrieving data
+    lateinit var block: LiveData<Model.Block>
 
-    val apiService by lazy {
-        ApiService.create()
-    }
-    var disposable: Disposable? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -28,48 +26,24 @@ class MainActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_main)
 
-//        val url = "https://localhost:3000/work"
-//        val url = "http://10.0.2.2:3000/work"
-//
-//        doAsync {
-//            Request(url).run()
-//            uiThread {
-//                toast("Request performed")
-//            }
-//        }
 
 
+        val repo = RepositoryProvider.blockRepository()
 
+        block = repo.getNewBlockHeader()
 
-        beginSearch()
+        // when loadded
+        block.observe(this, Observer {
+            // run miner in several threads
 
-//        btn_search.setOnClickListener {
-//            if (edit_search.text.toString().isNotEmpty()) {
-//                beginSearch(edit_search.text.toString())
-//            }
-//        }
+            logger.setText(it.blockHeader.merkleRoot)
+            var miningData:  MutableLiveData<Model.Header>
 
+//            miningData.value = Model.Header(it.blockHeader)
+            Miner(it.blockHeader).run()
 
+        })
 
-        //TODO  make Asyncval executor = Executors.newScheduledThreadPool(4)
-
-    }
-
-
-    private fun beginSearch() {
-        disposable = apiService.retrieveData()
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(
-                { result -> Log.d("JAVA HAHA", result.BlockHeader.merkleRoot) },
-                { error -> Log.d("JAVA error", error.message) }
-            )
-    }
-
-
-    fun isHashValid(hash: String,  difficulty: Int): Boolean {
-        var prefix = "0".repeat(difficulty)
-        return hash.startsWith(prefix)
     }
 
 
