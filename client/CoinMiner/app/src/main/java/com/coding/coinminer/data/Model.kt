@@ -6,7 +6,7 @@
 package com.coding.coinminer.data
 
 
-object Model(
+object Model {
     /**
      *
     {
@@ -22,14 +22,30 @@ object Model(
     }
     }
      */
-    data class Block()
-    data class Nonce(val curnonce: Int)
-    private var difficulty: Int,
-    private var prevBlockhash: String?,
-    private var merkleRoot: String?,
-    private var timestamp: String?,
-    private var version: Int
-) {
+    data class Block(
+        var jobId: Int,
+        var clientId: Int,
+        var BlockHeader: Header
+
+    )
+    data class Header(
+         var end: Int,
+         var difficulty: Int,
+         var prevBlockhash: String?,
+         var merkleRoot: String?,
+         var timestamp: String?,
+         var version: Int,
+         var Nonce: Int)
+
+//    data class Nonce(val curnonce: Int)
+
+
+//    private var difficulty: Int,
+//    private var prevBlockhash: String?,
+//    private var merkleRoot: String?,
+//    private var timestamp: String?,
+//    private var version: Int
+
     // translate json to class Block
 
 
