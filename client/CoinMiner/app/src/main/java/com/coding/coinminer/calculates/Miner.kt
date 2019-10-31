@@ -8,65 +8,70 @@ package com.coding.coinminer.calculates
 import android.util.Log
 import com.coding.coinminer.utils.HashUtil
 import com.coding.coinminer.data.Model
+import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.channels.actor
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
+import java.util.concurrent.atomic.AtomicInteger
 
-class Miner{
-    // Multithread running Miner
+class Miner {
+    // Calculating the hashing work
 
-    /**
-     * {
-            jobId: 2
-            clientId: 5,
-            blockHeader: {
-                version: 2,
-                prevBlockhash: 00000000000008a3a41b85b8b29ad444def299fee21793cd8b9e567eab02cd81,
-                merkleRoot: 2b12fcf1b09288fcaff797d71e950e71ae42b91e8bdb2304758dfcffc2b620e3,
-                timestamp: 1305998791,
-                difficultyTarget: 17,
-                Nonce: 2504433986
-            }
-        }
-     */
-
-    private var version: Long
-    private var prevBlockhash: String
-    private var merkleRoot: String
-    private var timestamp: String
-    private var difficulty: Int
-    private var Nonce: Long
+    private var version: Long = 0
+    private var prevBlockhash: String = ""
+    private var merkleRoot: String = ""
+    private var timestamp: String = ""
+    private var difficulty: Int = 0
+    private var Nonce: AtomicInteger = AtomicInteger()
 
 
-    constructor(b: Model.Header){
-        version = b.version
-        prevBlockhash = b.prevBlockhash
-        merkleRoot = b.merkleRoot
-        difficulty =  b.difficultyTarget
-        Nonce = b.Nonce
-        timestamp = b.timestamp
+    var b = Model.MiningData
+
+    constructor() {
+//        version = b.version
+//        prevBlockhash = b.prevBlockhash
+//        merkleRoot = b.merkleRoot
+//        difficulty =  b.difficultyTarget
+//        Nonce = AtomicInteger(b.Nonce.toInt())
+//        timestamp = b.timestamp
     }
 
-    fun run(){
-        Log.d("one thread miner", "one miner")
-    }
 
-//    fun run(){
-//        while(nonce < end ){
-//            if (isHashValid(calculateHash()))
-//                break
-////                return setToServer
+//     companion object {
+//         fun run() {
+//             Log.d("one thread miner", "one miner")
 //
-//            nonce++;
-//        }
-//    }
+//             Log.d("one thread miner Nonce",  Model.MiningData.Nonce.toString())
+//             Model.MiningData.Nonce.incrementAndGet()
+//         }
+//     }
+
+    companion object {
+        fun run(counter:AtomicInteger) {
+            Log.d("one thread miner", "one miner")
+
+            Log.d("one thread miner Nonce", counter.toString())
+
+        }
+
+    }
+
+
+
+
+
+
 
     // Returns the hash result string after sha256
     fun calculateHash():String{
 
-        return HashUtil.sha256(calculateBlockHash());
+        return HashUtil.sha256(HashUtil.sha256(calculateBlockHash()))
     }
 
-    /**
-     * Returns the hash content based on content and nonce
-     */
+
+    // Returns the hash content based on content and nonce
+
     fun calculateBlockHash(): String{
         // TODO produce the new content
 //        	record := string(block.Index) + block.Timestamp + string(block.BPM) + block.PrevHash
@@ -75,10 +80,29 @@ class Miner{
     }
 
 
-
     // Returns the hash content based on content and nonce
     fun isHashValid(hash: String): Boolean {
         var prefix = "0".repeat(this.difficulty)
         return hash.startsWith(prefix)
     }
+
+
 }
+
+
+//// Message types for counterActor
+//sealed class CounterMsg
+//object IncCounter : CounterMsg() // one-way message to increment counter
+//class GetCounter(val response: CompletableDeferred<Int>) : CounterMsg() // a request with reply
+//
+//
+//// This function launches a new counter actor
+//fun CoroutineScope.counterActor() = actor<CounterMsg> {
+//    var counter = 0 // actor state
+//    for (msg in channel) { // iterate over incoming messages
+//        when (msg) {
+//            is IncCounter -> counter++
+//            is GetCounter -> msg.response.complete(counter)
+//        }
+//    }
+//}

@@ -5,26 +5,37 @@
 
 package com.coding.coinminer.data
 
+import com.coding.coinminer.data.Model.MiningData
+import java.util.concurrent.atomic.AtomicInteger
+
 
 object Model {
-    /**
-     *
-    {
-    jobId: 2
-    clientId: 5,
-    blockHeader: {
-    version: 2,
-    prevBlockhash: 00000000000008a3a41b85b8b29ad444def299fee21793cd8b9e567eab02cd81,
-    merkleRoot: 2b12fcf1b09288fcaff797d71e950e71ae42b91e8bdb2304758dfcffc2b620e3,
-    timestamp: 1305998791,
-    difficultyTarget: 17,
-    Nonce: 2504433986
-    }
-    }
-     */
 
-//    var end: Int = 0
-//    var info: Block? = null
+
+    object MiningData {
+
+        var version: Long = 0
+        var prevBlockhash: String = ""
+        var merkleRoot: String = ""
+        var timestamp: String = ""
+        var difficultyTarget: Int = 0
+        // Volatile fields provide memory visibility
+        // guarantee that the value that is being read, comes from the main memory and not the cpu-cache
+        @Volatile
+        var Nonce: AtomicInteger = AtomicInteger()
+
+    }
+
+    fun setUpMiningData(i: Header) {
+
+        MiningData.version = i.version
+        MiningData.prevBlockhash = i.prevBlockhash
+        MiningData.merkleRoot = i.merkleRoot
+        MiningData.timestamp = i.timestamp
+        MiningData.difficultyTarget = i.difficultyTarget
+        MiningData.Nonce = AtomicInteger(i.Nonce.toInt())
+
+    }
 
 
     data class Block(

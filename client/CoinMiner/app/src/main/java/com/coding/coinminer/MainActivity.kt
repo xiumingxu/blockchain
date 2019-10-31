@@ -2,17 +2,18 @@ package com.coding.coinminer
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import com.coding.coinminer.calculates.Miner
 import com.coding.coinminer.data.Model
+import com.coding.coinminer.data.Model.setUpMiningData
 import com.coding.coinminer.data.RepositoryProvider
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.coroutines.*
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
+import java.util.concurrent.atomic.AtomicInteger
+import kotlin.system.measureTimeMillis
 
 class MainActivity : AppCompatActivity() {
 
@@ -27,24 +28,59 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
 
-
+        // Load Datas
         val repo = RepositoryProvider.blockRepository()
-
         block = repo.getNewBlockHeader()
 
-        // when loadded
+        // When data loadded
         block.observe(this, Observer {
-            // run miner in several threads
 
+            // Log information in the view
             logger.setText(it.blockHeader.merkleRoot)
-            var miningData:  MutableLiveData<Model.Header>
 
-//            miningData.value = Model.Header(it.blockHeader)
-            Miner(it.blockHeader).run()
+            // Setup data model
+            setUpMiningData(it.blockHeader)
+
+            var counter = AtomicInteger(Model.MiningData.Nonce.toInt())
+//            Mutex()
+            val mutex = Mutex()
+            runBlocking {
+                withContext(Dispatchers.Default) {
+                    // Make nonce public
+
+                    activateMiners {
+                        Miner.run(counter)
+                        mutex.withLock {
+                            counter.getAndIncrement()
+                        }
+                    }
+
+                }
+            }
 
         })
 
     }
+
+
+
+    suspend fun activateMiners(action: suspend () -> Unit) {
+        val n = 100  // number of coroutines to launch
+        val k = 1000 // times an action is repeated by each coroutine
+        val time = measureTimeMillis {
+            coroutineScope { // scope for coroutines
+                repeat(n) {
+                    launch {
+                        repeat(k) { action() }
+                    }
+                }
+            }
+        }
+        println("Completed ${n * k} actions in $time ms")
+    }
+
+
+
 
 
 
