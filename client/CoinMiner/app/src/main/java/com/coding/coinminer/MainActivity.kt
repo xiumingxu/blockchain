@@ -5,17 +5,28 @@ import android.os.Bundle
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import com.coding.coinminer.calculates.Miner
+import com.coding.coinminer.calculates.activateMiners
+import com.coding.coinminer.calculates.processNonces
 import com.coding.coinminer.data.Model
+import com.coding.coinminer.data.Model.MiningData.Nonce
 import com.coding.coinminer.data.Model.setUpMiningData
 import com.coding.coinminer.data.RepositoryProvider
+import com.coding.coinminer.utils.log
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.*
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
-import java.util.concurrent.atomic.AtomicInteger
-import kotlin.system.measureTimeMillis
+import kotlinx.coroutines.channels.*
+import kotlinx.coroutines.channels.produce
 
+import kotlinx.coroutines.sync.Mutex
+import java.util.concurrent.atomic.AtomicLong
+import kotlin.coroutines.CoroutineContext
+
+
+@kotlinx.coroutines.ExperimentalCoroutinesApi
 class MainActivity : AppCompatActivity() {
+
+
+    val coroutineContext: CoroutineContext get() =  Dispatchers.Main
 
     lateinit var block: LiveData<Model.Block>
 
@@ -26,7 +37,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.activity_main)
-
 
         // Load Datas
         val repo = RepositoryProvider.blockRepository()
@@ -41,47 +51,29 @@ class MainActivity : AppCompatActivity() {
             // Setup data model
             setUpMiningData(it.blockHeader)
 
-            var counter = AtomicInteger(Model.MiningData.Nonce.toInt())
-//            Mutex()
-            val mutex = Mutex()
+            // Running mining
             runBlocking {
                 withContext(Dispatchers.Default) {
-                    // Make nonce public
+                    // producer
+                    val noncesChannel = processNonces(Nonce.toLong(),  Long.MAX_VALUE)
 
-                    activateMiners {
-                        Miner.run(counter)
-                        mutex.withLock {
-                            counter.getAndIncrement()
-                        }
-                    }
+                    // consumer
+                    val minerReceived = activateMiners(noncesChannel, Miner())
+
+                    for (i in 1..5)
+                        log(minerReceived.receive()) // print first five
+                    log("Done!") // we are done
+                    coroutineContext.cancelChildren() // cancel children coroutines
 
                 }
             }
-
         })
 
     }
 
 
 
-    suspend fun activateMiners(action: suspend () -> Unit) {
-        val n = 100  // number of coroutines to launch
-        val k = 1000 // times an action is repeated by each coroutine
-        val time = measureTimeMillis {
-            coroutineScope { // scope for coroutines
-                repeat(n) {
-                    launch {
-                        repeat(k) { action() }
-                    }
-                }
-            }
-        }
-        println("Completed ${n * k} actions in $time ms")
-    }
-
-
-
-
-
-
 }
+
+
+

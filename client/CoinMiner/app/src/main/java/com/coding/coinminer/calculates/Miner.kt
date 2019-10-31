@@ -28,51 +28,29 @@ class Miner {
 
     var b = Model.MiningData
 
-    constructor() {
-//        version = b.version
-//        prevBlockhash = b.prevBlockhash
-//        merkleRoot = b.merkleRoot
-//        difficulty =  b.difficultyTarget
-//        Nonce = AtomicInteger(b.Nonce.toInt())
-//        timestamp = b.timestamp
-    }
+        companion object {
 
-
-//     companion object {
-//         fun run() {
-//             Log.d("one thread miner", "one miner")
-//
-//             Log.d("one thread miner Nonce",  Model.MiningData.Nonce.toString())
-//             Model.MiningData.Nonce.incrementAndGet()
-//         }
-//     }
-
-    companion object {
         fun run(counter:AtomicInteger) {
-            Log.d("one thread miner", "one miner")
 
+            Log.d("one thread miner", "one miner")
             Log.d("one thread miner Nonce", counter.toString())
 
         }
 
     }
 
-
-
-
-
-
+    // Using suspend function to get the calculation
 
     // Returns the hash result string after sha256
-    fun calculateHash():String{
+    suspend fun calculateHash(s: String):String{
 
-        return HashUtil.sha256(HashUtil.sha256(calculateBlockHash()))
+        return HashUtil.sha256(HashUtil.sha256(s))
     }
 
 
     // Returns the hash content based on content and nonce
 
-    fun calculateBlockHash(): String{
+    suspend fun calculateContentToBeHashed(nonce:Long): String{
         // TODO produce the new content
 //        	record := string(block.Index) + block.Timestamp + string(block.BPM) + block.PrevHash
 //        return block.toString() + nonce + ""
@@ -81,28 +59,10 @@ class Miner {
 
 
     // Returns the hash content based on content and nonce
-    fun isHashValid(hash: String): Boolean {
+    suspend fun isHashValid(hash: String): Boolean {
         var prefix = "0".repeat(this.difficulty)
         return hash.startsWith(prefix)
     }
 
 
 }
-
-
-//// Message types for counterActor
-//sealed class CounterMsg
-//object IncCounter : CounterMsg() // one-way message to increment counter
-//class GetCounter(val response: CompletableDeferred<Int>) : CounterMsg() // a request with reply
-//
-//
-//// This function launches a new counter actor
-//fun CoroutineScope.counterActor() = actor<CounterMsg> {
-//    var counter = 0 // actor state
-//    for (msg in channel) { // iterate over incoming messages
-//        when (msg) {
-//            is IncCounter -> counter++
-//            is GetCounter -> msg.response.complete(counter)
-//        }
-//    }
-//}

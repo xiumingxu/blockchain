@@ -28,7 +28,18 @@ The mining software constructs a block using the template (described below) and 
 The Merkle root of a block works to provide summarizing hash of list of transactions.
 
 
+
+### Distributed system 
+
+[Coroutines ](https://codelabs.developers.google.com/codelabs/kotlin-coroutines/#3)
+[Coffee Shop Visualization](https://proandroiddev.com/kotlin-coroutines-channels-csp-android-db441400965f)
+[Producer and Consumer](https://kotlinlang.org/docs/reference/coroutines/channels.html)
+
+
+![](2019-10-31-16-53-17.png)
+
 ### Merkle root
+
 
 Structure for hashing the transactions
 
