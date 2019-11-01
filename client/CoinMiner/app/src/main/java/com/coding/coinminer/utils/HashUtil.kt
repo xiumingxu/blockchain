@@ -5,16 +5,17 @@
 
 package com.coding.coinminer.utils
 
+import java.lang.Long.parseLong
 import java.security.MessageDigest
 
 // Singleton
 object HashUtil{
 
-        fun sha512(input: String) = hashString("SHA-512", input)
+        fun sha512(input: ByteArray) = hashBytes("SHA-512", input)
 
-        fun sha256(input: String) = hashString("SHA-256", input)
+        fun sha256(input: ByteArray) = hashBytes("SHA-256", input)
 
-        fun sha1(input: String) = hashString("SHA-1", input)
+        fun sha1(input: ByteArray) = hashBytes("SHA-1", input)
 
         /**
          * Supported algorithms on Android:
@@ -27,29 +28,40 @@ object HashUtil{
          * SHA-384	    1+
          * SHA-512	    1+
          */
-        private fun hashString(type: String, input: String): String {
+        private fun hashBytes(type: String, inputs: ByteArray): ByteArray {
             val bytes = MessageDigest
                 .getInstance(type)
-                .digest(input.toByteArray())
-            val result = StringBuilder()
+                .digest(inputs)
 
+            return bytes
+//            val result = StringBuilder()
+//
+//            bytes.forEach {
+//                result.append("%2x".format(it))
+//            }
+
+
+//            fold in understanding
+//            println("fold " +  bytes.fold("", { str, it -> str + "%02x".format(it) }))
+//            var hex = result.toString()
+////            var i = Long.parseLong(hex, 16)
+//            println("hex " + hex)
+//            println("result " +  result.toString())
+//            return result.toString()
+
+        }
+
+        fun byteArrayToString(bytes: ByteArray):String{
+            val result = StringBuilder()
 
             bytes.forEach {
                 result.append("%2x".format(it))
             }
-
-
-//            fold in understanding
-            println("fold " +  bytes.fold("", { str, it -> str + "%02x".format(it) }))
-            var hex = result.toString()
-//            var i = Long.parseLong(hex, 16)
-            println("hex " + hex)
-            println("result " +  result.toString())
-            return result.toString()
-
+                return  result.toString()
 
         }
-//        fun hexToBinary(hex: String): String {
-////            return Long(hex, 16).toString(2)
-//        }
+
+        fun hexToBinary(hex: String): String {
+            return parseLong(hex, 16).toString(2)
+        }
 }

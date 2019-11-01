@@ -17,6 +17,12 @@ For allocating bitcoin problems
 #### [Blockchain Header](https://bitcoin.org/en/developer-reference#block-chain)
 Block headers are serialized in the 80-byte format described below and then hashed as part of Bitcoin’s proof-of-work algorithm, making the serialized header format part of the consensus rules.
 
+#### [Block Hashing Algorithm]
+
+https://en.bitcoin.it/wiki/Block_hashing_algorithm
+https://analysis.null.place/how-do-the-bitcoin-mining-algorithms-work/#form7
+
+
 ### Mining in Bitcoin 
 [Skeleton](2019-10-29-15-35-39.png)
 

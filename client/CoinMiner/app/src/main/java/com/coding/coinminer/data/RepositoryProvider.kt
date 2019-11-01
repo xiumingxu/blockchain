@@ -8,7 +8,11 @@ package com.coding.coinminer.data
 object RepositoryProvider {
 
     fun blockRepository(): BlockRepository {
+
+        // Provider create the api Service
         val apiService = BlockAPIService.create()
         return BlockRepository(apiService)
     }
+
+    // Could be extended to block repo1 block repo 3
 }
