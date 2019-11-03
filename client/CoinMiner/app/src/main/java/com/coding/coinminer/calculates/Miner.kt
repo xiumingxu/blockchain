@@ -35,7 +35,7 @@ class Miner(
     }
 
 
-    // return the hash to see whether it is potential target
+    // Return whether it is nonce reaching the diffculty target
     fun verifyNonce(nonce: Long): Boolean {
         var content = generateHash(nonce)
         var hashed = sha256256(content)
@@ -71,14 +71,12 @@ class Miner(
     }
 
 
-    // Returns the hash content based on block header
-    // TODO could be done in parallel
+    // Return the hash content based on block header
     private fun initializeHashContent() {
 
         var b = blockHeader
 
         timeBitsNonceArr = getTimeBitsNonceArr(b.Nonce)
-
         versionArray = getByteArrayFromStringInSize(b.version, 4)
 
         // previous block hash
@@ -123,7 +121,7 @@ class Miner(
     }
 
 
-    // reverse the array
+    // Return the array reversed
     private fun reverseByteArray(array: ByteArray): ByteArray {
         var left: Int = 0
         var right = array.size - 1
@@ -157,7 +155,7 @@ class Miner(
     }
 
 
-    //Return the version byte array
+    // Return the version byte array
     private fun getByteArrayFromStringInSize(str: String, size: Int): ByteArray {
         var array = initByteArray(size)
         var value = parseLong(str, 16)

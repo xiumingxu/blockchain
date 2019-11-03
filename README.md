@@ -1,16 +1,17 @@
 # Blockchain Miner Application
 
 ## Quick Start
-Please visit 34.1223 for testing server deployment
-
+- Subfolder[client] includes the src file for android application (Minimum platform Android 9)
+- Subfolder[server] includes a Noder.js server src files, which deployed to http://34.217.130.218:3000/ (AWS)
+  
 
 ## Introduction
 A fullstack solution for blockchain mining 
 
 ## Problem Detailing 
 ### Client 
-Generate the nounce in bitcoin header(random solution) and hash it the 
-Getting thecen ter
+Generate the nounce in bitcoin header(random solution) and return the hashed nonce to server
+
 ### Server - Bitcoin central service 
 For allocating bitcoin mining task to clients and collect the nonces
 
@@ -39,7 +40,7 @@ The Merkle root of a block works to provide summarizing hash of list of transact
 
 
 
-### Distributed system 
+### Concurrency Implementation (Distributed manner) 
 
 [Coroutines ](https://codelabs.developers.google.com/codelabs/kotlin-coroutines/#3)
 [Coffee Shop Visualization](https://proandroiddev.com/kotlin-coroutines-channels-csp-android-db441400965f)
@@ -77,4 +78,11 @@ Structure for hashing the transactions
 ![Android](demo.gif)
 
  Document of implementation are in ths SUBFOLDERS/README.md
+
+ ## TODOs 
+- Server side implement authorization process
+- Implement database connection based on different clients id
+- Optimize performance in the client side
+
+
  

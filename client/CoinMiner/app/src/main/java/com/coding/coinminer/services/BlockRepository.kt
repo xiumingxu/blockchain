@@ -25,7 +25,7 @@ class BlockRepository(val apiService: BlockAPIService) {
     // send get http request and return live data
     // TODO: put data into ROOM
     fun getBlockHeader(): Observable<Block> {
-        // An authorization header
+        //TODO  An authorization header
 //        if (Model.token.equals("")) {
 //            Log.d("login", "new miner")
 //            return apiService.getBlockHeader("NEWMINER")

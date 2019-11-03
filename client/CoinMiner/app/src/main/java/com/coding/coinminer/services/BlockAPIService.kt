@@ -26,20 +26,20 @@ interface BlockAPIService {
 
     // TODO Add Authorization Credentials to the header
     // Return token add to the submit and work in the future
-//    @POST("login")
-//    fun longIn(@Body login: String): String
+    //    @POST("login")
+    //    fun longIn(@Body login: String): String
 
     @POST("submit")
     fun postNonce(@Body block: Model.Block): Call<Model.Block>
-//    @Header("Authorization") authHeader: String
+    // TODO  @Header("Authorization") authHeader: String
 
 
     // Companion object to create the BLOCK API service
     companion object Factory {
 
         val BASE_URL = "http://34.217.130.218:3000/"
-//        val BASE_URL = "http://10.0.2.2:3000/"
-        // Generates retrofit service
+    //  val BASE_URL = "http://10.0.2.2:3000/"
+        // Generate retrofit service
         fun create(): BlockAPIService {
 
             val retrofit = Retrofit.Builder()
