@@ -2,28 +2,33 @@ package com.coding.coinminer
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.Observer
 import com.coding.coinminer.calculates.Distributor.activateMiners
 import com.coding.coinminer.calculates.Distributor.processNonces
 import com.coding.coinminer.data.Model
-import com.coding.coinminer.data.Model.MiningData.Nonce
-import com.coding.coinminer.data.Model.setUpMiningData
-import com.coding.coinminer.data.RepositoryProvider
+
+import com.coding.coinminer.services.RepositoryProvider
 import kotlinx.android.synthetic.main.activity_main.*
 import android.text.method.ScrollingMovementMethod
+import android.widget.Toast
+import com.coding.coinminer.calculates.Miner
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
+import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.*
-import retrofit2.Call
-import retrofit2.Callback
 import kotlin.system.measureTimeMillis
+
 
 
 @kotlinx.coroutines.ExperimentalCoroutinesApi
 class MainActivity : AppCompatActivity() {
 
 
+    private var disposable: Disposable? = null
+    val repo = RepositoryProvider.blockRepository()
+    var nonce =  CompletableDeferred<Long>()
 
-    lateinit var block: LiveData<Model.Block>
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -33,61 +38,86 @@ class MainActivity : AppCompatActivity() {
         logger.setMovementMethod(ScrollingMovementMethod())
 
 
-        // Load Data in async task
-        val repo = RepositoryProvider.blockRepository()
-        block = repo.getNewBlockHeader()
+        minerBtn.setOnClickListener{
+            logger.append("\n-----------------------------------------\n")
+            logger.append("Start Mining\n")
+            minerBtn.setEnabled(false)
+            beginMining(nonce){
+                onNonceFound->
+                minerBtn.setEnabled(true)
+                logger.append("The nonce you found: " + onNonceFound.second)
+                repo.postNonce(onNonceFound.first, onNonceFound.second)
 
-
-
-        // TODO change to callback
-        block.observe(this, Observer {
-
-            // Log information in the view
-            logger.append(it.toString() + "\n")
-
-            // Setup data model
-            setUpMiningData(it.blockHeader)
-
-            // Running mining
-            runBlocking {
-                withContext(Dispatchers.Default) {
-                    var time = measureTimeMillis {
-                    // producer
-                        val noncesChannel = processNonces(Nonce,  Long.MAX_VALUE)
-                        // consumer: distribute the nonces to miners to work
-                        var resultChannel = activateMiners(noncesChannel, it.blockHeader)
-
-
-                        var found = resultChannel.receive()
-                        while(found.first != true) {
-                            logger.append(found.second.toString() + "\n")
-                            found = resultChannel.receive()
-                        }
-
-                        // send to server the nounce found
-                        logger.append("Nonce Found: " + found + "\n")
-
-                        // Previous block and nonce found
-                        repo.postNonce(it, found.second)
-
-//                        postMeg.enqueue(object: Callback<Model.Block>){
-//                            override fun onrespo
-//
-//                        }
-
-
-                    }
-                    logger.append("Time consumed: " + time + "\n")
-                    coroutineContext.cancelChildren() // cancel children coroutines
-                }
             }
 
-        })
-
-
+        }
 
     }
 
+
+    fun beginMining(nonceFound: CompletableDeferred<Long>, onNonceFound: (nonce: Pair<Model.Block, Long>) -> Unit){
+        repo.getBlockHeader()
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(
+                { result ->
+                    logger.append("The block header you got:\n")
+                    logger.append(result.toString() + "\n")
+
+                       var nonceFond = singleThreadMiner(result, nonce)
+                       onNonceFound.invoke(Pair(result, nonceFond))
+
+//                    An attempt to do the mineing task in a parallel way
+//                    unBlocking{
+//                        distributeMiners(it = result, nonceFound = nonceFound)
+//                    }
+//                    logger.append("Nonce you found: " +  nonceFound.getCompleted() + "\n")
+
+//                    repo.postNonce(result, nonceFound.getCompleted())
+
+                },
+                { error -> Toast.makeText(this, error.message, Toast.LENGTH_SHORT).show() }
+            )
+
+    }
+
+    fun singleThreadMiner(it:Model.Block, nonceFound: CompletableDeferred<Long>): Long{
+        logger.append("Single Thread \n")
+        var nonce = it.blockHeader.Nonce
+
+        var time = measureTimeMillis {
+            while(Miner(it.blockHeader).verifyNonce(nonce) != true && nonce < Long.MAX_VALUE){
+                nonce++;
+            }
+        }
+        logger.append("Time consumed: " + time + "\n")
+        nonceFound.complete(nonce)
+        return nonce
+    }
+
+    fun distributeMiners(it: Model.Block, nonceFound: CompletableDeferred<Long>) {
+        logger.append("Multi Thread \n")
+        runBlocking{
+            withContext(Dispatchers.Unconfined) {
+                var time = measureTimeMillis {
+                    // producer
+                    val noncesChannel = processNonces(it.blockHeader.Nonce, Long.MAX_VALUE)
+                    // consumer: distribute the nonces to miners to work
+                    var resultChannel = activateMiners(noncesChannel, it.blockHeader)
+
+                    var found = resultChannel.receive()
+                    while (found.first != true) {
+//                        logger.append(found.second.toString() + "\n")
+                        found = resultChannel.receive()
+                    }
+
+                    nonceFound.complete(found.second)
+                }
+                logger.append("Time consumed: " + time + "\n")
+                coroutineContext.cancelChildren() // cancel children coroutines
+            }
+        }
+    }
 
 }
 

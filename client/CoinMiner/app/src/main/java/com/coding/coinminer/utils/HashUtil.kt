@@ -32,22 +32,7 @@ object HashUtil{
             val bytes = MessageDigest
                 .getInstance(type)
                 .digest(inputs)
-
             return bytes
-//            val result = StringBuilder()
-//
-//            bytes.forEach {
-//                result.append("%2x".format(it))
-//            }
-
-
-//            fold in understanding
-//            println("fold " +  bytes.fold("", { str, it -> str + "%02x".format(it) }))
-//            var hex = result.toString()
-////            var i = Long.parseLong(hex, 16)
-//            println("hex " + hex)
-//            println("result " +  result.toString())
-//            return result.toString()
 
         }
 
@@ -57,7 +42,7 @@ object HashUtil{
             bytes.forEach {
                 result.append("%2x".format(it))
             }
-                return  result.toString()
+                return result.toString()
 
         }
 

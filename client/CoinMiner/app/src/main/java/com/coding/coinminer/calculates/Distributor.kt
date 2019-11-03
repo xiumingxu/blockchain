@@ -20,7 +20,6 @@ object Distributor{
     // A producer for producing the nounce for miner to hash
     fun CoroutineScope.processNonces(nonce: Long, end: Long)  = produce <Long>(capacity = 5) {
         for( n in nonce..end){
-            log("NonceSender: " + n)
             send(n)
         }
     }
@@ -28,15 +27,11 @@ object Distributor{
     // A producer of completed nonces to calculate
     fun CoroutineScope.activateMiners(nonces: ReceiveChannel<Long>,  blockHeader: Model.Header) = produce <Pair<Boolean, Long>> {
         nonces.consumeEach {
-            // defered done
-            log("Processing nonces: $it")
             // For each nonce active the miner
             coroutineScope {
 
                 var res = Miner( blockHeader ).verifyNonce(it)
-
                 send(Pair(res, it))
-
             }
         }
     }

@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">CoinMiner</string>
+    <string name="btnMiner">Start Mining</string>
 </resources>
