@@ -25,13 +25,22 @@ class BlockRepository(val apiService: BlockAPIService) {
     // send get http request and return live data
     // TODO: put data into ROOM
     fun getBlockHeader(): Observable<Block> {
+        // An authorization header
+//        if (Model.token.equals("")) {
+//            Log.d("login", "new miner")
+//            return apiService.getBlockHeader("NEWMINER")
+//        } else {
+//            Log.d("login", "token")
+//            return apiService.getBlockHeader(Model.token)
+//        }
+
         return apiService.getBlockHeader()
+
 
     }
 
     fun postNonce(pre: Block, nonceFound: Long): Boolean {
 
-        log("nonceFound " + nonceFound)
         pre.blockHeader.Nonce = nonceFound
 
         var success = CompletableDeferred<Boolean>()
@@ -40,7 +49,6 @@ class BlockRepository(val apiService: BlockAPIService) {
                 val LOG_TAG = "POST"
 
                 override fun onFailure(call: Call<Block>, t: Throwable) {
-                    Log.d(LOG_TAG, "No Success and No new block to mine")
                     success.complete(false)
 
                 }
@@ -50,7 +58,7 @@ class BlockRepository(val apiService: BlockAPIService) {
                         Log.d(LOG_TAG, "No Success")
                     }
                     success.complete(true)
-                    Log.d(LOG_TAG, "Something again from server " + response.body().toString()!!)
+                    Log.d(LOG_TAG, "Something again from server " + response.body().toString())
                 }
 
             })

@@ -7,6 +7,12 @@ package com.coding.coinminer.data
 
 
 object Model {
+    // TODO Store in a way of variable, should be stored in a database/file
+    var token: String
+        get() {
+            return token
+        }
+        set(value) { token = value}
 
 
     data class Block(

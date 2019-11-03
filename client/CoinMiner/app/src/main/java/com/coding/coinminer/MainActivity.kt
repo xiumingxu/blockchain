@@ -1,5 +1,6 @@
 package com.coding.coinminer
 
+import android.media.MediaPlayer
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.coding.coinminer.calculates.Distributor.activateMiners
@@ -9,6 +10,7 @@ import com.coding.coinminer.data.Model
 import com.coding.coinminer.services.RepositoryProvider
 import kotlinx.android.synthetic.main.activity_main.*
 import android.text.method.ScrollingMovementMethod
+import android.util.Log
 import android.widget.Toast
 import com.coding.coinminer.calculates.Miner
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -16,6 +18,11 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.*
 import kotlin.system.measureTimeMillis
+import androidx.core.app.ComponentActivity
+import androidx.core.app.ComponentActivity.ExtraData
+import androidx.core.content.ContextCompat.getSystemService
+import android.icu.lang.UCharacter.GraphemeClusterBreak.T
+
 
 
 
@@ -25,10 +32,9 @@ class MainActivity : AppCompatActivity() {
 
     private var disposable: Disposable? = null
     val repo = RepositoryProvider.blockRepository()
-    var nonce =  CompletableDeferred<Long>()
-
-
-
+    var nonce = CompletableDeferred<Long>()
+    // For sound playing
+    var mp: MediaPlayer? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -36,16 +42,18 @@ class MainActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_main)
         logger.setMovementMethod(ScrollingMovementMethod())
+        mp =  MediaPlayer.create(this, R.raw.coinsound)
 
 
-        minerBtn.setOnClickListener{
+
+        minerBtn.setOnClickListener {
             logger.append("\n-----------------------------------------\n")
             logger.append("Start Mining\n")
             minerBtn.setEnabled(false)
-            beginMining(nonce){
-                onNonceFound->
+            beginMining(nonce) { onNonceFound ->
                 minerBtn.setEnabled(true)
                 logger.append("The nonce you found: " + onNonceFound.second)
+                mp?.start()
                 repo.postNonce(onNonceFound.first, onNonceFound.second)
 
             }
@@ -54,8 +62,11 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-
-    fun beginMining(nonceFound: CompletableDeferred<Long>, onNonceFound: (nonce: Pair<Model.Block, Long>) -> Unit){
+    //  Return a callback to handle the nonce collected
+    fun beginMining(
+        nonceFound: CompletableDeferred<Long>,
+        onNonceFound: (nonce: Pair<Model.Block, Long>) -> Unit
+    ) {
         repo.getBlockHeader()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
@@ -64,8 +75,8 @@ class MainActivity : AppCompatActivity() {
                     logger.append("The block header you got:\n")
                     logger.append(result.toString() + "\n")
 
-                       var nonceFond = singleThreadMiner(result, nonce)
-                       onNonceFound.invoke(Pair(result, nonceFond))
+                    var nonceFond = singleThreadMiner(result, nonce)
+                    onNonceFound.invoke(Pair(result, nonceFond))
 
 //                    An attempt to do the mineing task in a parallel way
 //                    unBlocking{
@@ -76,17 +87,17 @@ class MainActivity : AppCompatActivity() {
 //                    repo.postNonce(result, nonceFound.getCompleted())
 
                 },
-                { error -> Toast.makeText(this, error.message, Toast.LENGTH_SHORT).show() }
+                { error -> Log.d("Data Loading", error.message) }
             )
 
     }
 
-    fun singleThreadMiner(it:Model.Block, nonceFound: CompletableDeferred<Long>): Long{
+    fun singleThreadMiner(it: Model.Block, nonceFound: CompletableDeferred<Long>): Long {
         logger.append("Single Thread \n")
         var nonce = it.blockHeader.Nonce
 
         var time = measureTimeMillis {
-            while(Miner(it.blockHeader).verifyNonce(nonce) != true && nonce < Long.MAX_VALUE){
+            while (Miner(it.blockHeader).verifyNonce(nonce) != true && nonce < Long.MAX_VALUE) {
                 nonce++;
             }
         }
@@ -95,9 +106,10 @@ class MainActivity : AppCompatActivity() {
         return nonce
     }
 
+    //
     fun distributeMiners(it: Model.Block, nonceFound: CompletableDeferred<Long>) {
         logger.append("Multi Thread \n")
-        runBlocking{
+        runBlocking {
             withContext(Dispatchers.Unconfined) {
                 var time = measureTimeMillis {
                     // producer

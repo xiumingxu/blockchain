@@ -1,16 +1,20 @@
 # Blockchain Miner Application
+
+## Quick Start
+Please visit 34.1223 for testing server deployment
+
+
+## Introduction
 A fullstack solution for blockchain mining 
 
-## Implementation Architecture
-
+## Problem Detailing 
 ### Client 
 Generate the nounce in bitcoin header(random solution) and hash it the 
 Getting thecen ter
 ### Server - Bitcoin central service 
-For allocating bitcoin problems 
+For allocating bitcoin mining task to clients and collect the nonces
 
-
-## Bitcoin Dig In
+## Bitcoin Topic Dig In
 
 #### [Bitcoin whitepaper](https://bitcoin.org/bitcoin.pdf)
 
@@ -24,7 +28,7 @@ https://analysis.null.place/how-do-the-bitcoin-mining-algorithms-work/#form7
 
 
 ### Mining in Bitcoin 
-[Skeleton](2019-10-29-15-35-39.png)
+![Skeleton](2019-10-29-15-35-39.png)
 
 The mining software constructs a block using the template (described below) and creates a block header. It then sends the 80-byte block header to its mining hardware (an ASIC) along with a target threshold (difficulty setting). The mining hardware iterates through every possible value for the block header nonce and generates the corresponding hash.
 
@@ -49,7 +53,9 @@ The Merkle root of a block works to provide summarizing hash of list of transact
 
 Structure for hashing the transactions
 
-## 
+## Extension
+
+
 
 ## Userful Links
 [Blockchain Header](https://learnmeabitcoin.com/explorer/block/0000000000002917ED80650C6174AAC8DFC46F5FE36480AAEF682FF6CD83C3CA)  -- How to serialization
@@ -66,3 +72,9 @@ Structure for hashing the transactions
 
 
 [Bit Core Download]https://snapcraft.io/bitcoin-core
+
+## Application Demo
+![Android](demo.gif)
+
+ Document of implementation are in ths SUBFOLDERS/README.md
+ 
