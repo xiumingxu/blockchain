@@ -1,6 +1,4 @@
 //API
-var app = require("express")();
-const routes = require("./routes");
 // Require the framework and instantiate it
 const fastify = require("fastify")({ logger: true });
 
@@ -52,7 +50,6 @@ const getTask = () => {
 	console.log({ jobId, clientId, blockHeader });
 	return { jobId, clientId, blockHeader };
 };
-
 // pepare new task
 const allocateNewTask = () => {
 	jobId++;
