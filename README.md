@@ -20,10 +20,9 @@ Generates a BrezelCoin mining task and sends them to clients if requested. Colle
 
 #### [Bitcoin whitepaper](https://bitcoin.org/bitcoin.pdf)
 
-#### [Blockchain Header](https://bitcoin.org/en/developer-reference#block-chain):
-```
-Block headers are serialized in the 80-byte format described below and then hashed as part of Bitcoin’s proof-of-work algorithm, making the serialized header format part of the consensus rules.
-```
+#### [Blockchain Header](https://bitcoin.org/en/developer-reference#block-chain)
+
+*"Block headers are serialized in the 80-byte format described below and then hashed as part of Bitcoin’s proof-of-work algorithm, making the serialized header format part of the consensus rules."*
 
 #### Block Hashing Algorithm
 Code reference: https://analysis.null.place/how-do-the-bitcoin-mining-algorithms-work/#form7
@@ -32,13 +31,12 @@ Code reference: https://analysis.null.place/how-do-the-bitcoin-mining-algorithms
 
 ![Skeleton](2019-10-29-15-35-39.png)
 From https://en.bitcoin.it/wiki/Block_hashing_algorithm:
-```The mining software constructs a block using the template (described below) and creates a block header. It then sends the 80-byte block header to its mining hardware (an ASIC) along with a target threshold (difficulty setting). The mining hardware iterates through every possible value for the block header nonce and generates the corresponding hash.
 
- If a hash is found below the target threshold, the mining hardware returns the block header with the successful nonce to the mining software. The mining software combines the header with the block and sends the completed block to bitcoind to be broadcast to the network for addition to the block chain.
+*"The mining software constructs a block using the template (described below) and creates a block header. It then sends the 80-byte block header to its mining hardware (an ASIC) along with a target threshold (difficulty setting). The mining hardware iterates through every possible value for the block header nonce and generates the corresponding hash.*
 
+*If a hash is found below the target threshold, the mining hardware returns the block header with the successful nonce to the mining software. The mining software combines the header with the block and sends the completed block to bitcoind to be broadcast to the network for addition to the block chain.*
 
-The Merkle root of a block works to provide summarizing hash of list of transactions.
-``` 
+*The Merkle root of a block works to provide summarizing hash of list of transactions."*
 
 
 ### Concurrency Implementation (Distributed manner) 
