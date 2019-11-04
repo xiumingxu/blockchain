@@ -72,7 +72,7 @@ The structure for hashing the transactions.
 ## Application Demo
 ![Android](imgs/demo.gif)
 
- Documents for the implementation are in [client/README.md](client/README.md) and [server/README.md](server/README.md) 
+ Documents for the implementation are in [client/README.md](client/README.md) and [server/centralServiceApp/README.md](server/centralServiceApp/README.md) 
 
  ## Possible enhancements 
 - Server side: implement authorization process (started)
