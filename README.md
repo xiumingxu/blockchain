@@ -79,9 +79,9 @@ The structure for hashing the transactions.
  Documents for the implementation are in SUBFOLDERS/README.md
 
  ## Possible enhancements 
-- Server side: implement authorization process
+- Server side: implement authorization process (started)
 - Implement database connection based on different client IDs
-- Optimize performance on the client side
+- Optimize performance on the client side (started with multithread implementation)
 
 # Copyright
 See `LICENSE` file.
