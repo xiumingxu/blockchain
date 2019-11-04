@@ -125,7 +125,7 @@ class MainActivity : AppCompatActivity() {
 
                     nonceFound.complete(found.second)
                 }
-                logger.append("Time consumed: " + time + "\n")
+                logger.append("Time consumed: " + time + "ms \n")
                 coroutineContext.cancelChildren() // cancel children coroutines
             }
         }
