@@ -3,8 +3,7 @@
 
 ## Quick Start
 - [Subfolder client](client) includes the src file for the interactive Android application (Minimum platform: Android 9)
-- [Subfolder server](server) includes Node.js server src files, which are currently deployed to http://34.217.130.218:3000 (AWS) in a Docker environment – get a sample work package by appending `/work` to above URL.
-  
+- [Subfolder server](server) includes Node.js server src files, which are currently deployed to http://54.191.76.81:3000 (AWS) in a Docker environment – get a sample work package by appending `/work` to above URL.
 
 ## Introduction
 A full-stack solution for BrezelCoin mining (a new cryptocurrency introduced in this repo). 

@@ -37,8 +37,7 @@ interface BlockAPIService {
     // Companion object to create the BLOCK API service
     companion object Factory {
 
-        val BASE_URL = "http://34.217.130.218:3000/"
-    //  val BASE_URL = "http://10.0.2.2:3000/"
+        val BASE_URL = "http://54.191.76.81:3000/"
         // Generate retrofit service
         fun create(): BlockAPIService {
 
