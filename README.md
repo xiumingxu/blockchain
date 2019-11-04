@@ -2,8 +2,8 @@
 ![BrezelCoin](BrezelCoin.svg)
 
 ## Quick Start
-- Subfolder `client` includes the src file for the interactive Android application (Minimum platform: Android 9)
-- Subfolder `server` includes Node.js server src files, which are currently deployed to http://34.217.130.218:3000/ (AWS) in A Docker environment.
+- [Subfolder client](client) includes the src file for the interactive Android application (Minimum platform: Android 9)
+- [Subfolder server](server) includes Node.js server src files, which are currently deployed to http://34.217.130.218:3000 (AWS) in A Docker environment – get a sample work package by appending `/work` to above URL.
   
 
 ## Introduction
@@ -25,8 +25,8 @@ Generates a BrezelCoin mining task and sends them to clients if requested. Colle
 Block headers are serialized in the 80-byte format described below and then hashed as part of Bitcoin’s proof-of-work algorithm, making the serialized header format part of the consensus rules.
 ```
 
-#### [Block Hashing Algorithm]
-
+#### Block Hashing Algorithm
+Code reference: https://analysis.null.place/how-do-the-bitcoin-mining-algorithms-work/#form7
 
 ### Mining in Bitcoin 
 
@@ -40,13 +40,10 @@ From https://en.bitcoin.it/wiki/Block_hashing_algorithm:
 The Merkle root of a block works to provide summarizing hash of list of transactions.
 ``` 
 
-Code reference: https://analysis.null.place/how-do-the-bitcoin-mining-algorithms-work/#form7:
-
-
 
 ### Concurrency Implementation (Distributed manner) 
 
-[Coroutines ](https://codelabs.developers.google.com/codelabs/kotlin-coroutines/#3)
+[Coroutines](https://codelabs.developers.google.com/codelabs/kotlin-coroutines/#3)
 [Coffee Shop Visualization](https://proandroiddev.com/kotlin-coroutines-channels-csp-android-db441400965f)
 [Producer and Consumer](https://kotlinlang.org/docs/reference/coroutines/channels.html)
 
@@ -71,12 +68,12 @@ The structure for hashing the transactions.
 [Original Bitcoin](https://en.bitcoin.it/wiki/Original_Bitcoin_client/API_calls_list)
 
 
-[Bit Core Download]https://snapcraft.io/bitcoin-core
+[Bit Core Download](https://snapcraft.io/bitcoin-core)
 
 ## Application Demo
 ![Android](demo.gif)
 
- Documents for the implementation are in SUBFOLDERS/README.md
+ Documents for the implementation are in [client/README.md](client/README.md) and [server/README.md](server/README.md) 
 
  ## Possible enhancements 
 - Server side: implement authorization process (started)
@@ -84,7 +81,7 @@ The structure for hashing the transactions.
 - Optimize performance on the client side (started with multithread implementation)
 
 # Copyright
-See `LICENSE` file.
+See [LICENSE file](LICENSE).
 
 
  
