@@ -10,7 +10,7 @@ A full-stack solution for BrezelCoin mining (a new cryptocurrency introduced in 
 
 ## Problem Details
 ### Client 
-If triggered by the user, requests a bitcoin package from the server (randomly generated), generates the nonce contained in the header and returns the hashed nonce to the server. 
+If triggered by the user, requests a work package from the server (with updated nonces per request), generates the nonce contained in the header and returns the hashed nonce to the server. 
 
 ### Server - Bitcoin central service 
 Generates a BrezelCoin mining task and sends them to clients if requested. Collects the nonces.
@@ -73,10 +73,11 @@ The structure for hashing the transactions.
 
  Documents for the implementation are in [client/README.md](client/README.md) and [server/centralServiceApp/README.md](server/centralServiceApp/README.md) 
 
- ## Possible enhancements 
-- Server side: implement authorization process (started)
-- Implement database connection based on different client IDs
+## Possible enhancements
 - Optimize performance on the client side (started with multithread implementation)
+- Server side: implement authorization process (started)
+- Get real data from a cryptocurrency server (currently assuming the same Merkle root while only updating nonces for all client requests)
+- Implement database connection based on different client IDs
 
 # Copyright
 See [LICENSE file](LICENSE).
