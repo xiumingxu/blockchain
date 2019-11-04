@@ -1,5 +1,4 @@
 // Require the framework and instantiate it
-// const fasitfy = require("fastify")({ logger: true });
 const express = require("express");
 const app = express();
 
@@ -7,7 +6,7 @@ const bodyParser = require("body-parser");
 let jwt = require("jsonwebtoken");
 let config = require("./config");
 let middleware = require("./middleware");
-
+//Enhancements: Finish security login mechanism
 class HandlerGenerator {
 	login (req, res) {
 		console.log(req, res);
@@ -122,7 +121,6 @@ app.get("/", async (request, reply) => {
 const start = async () => {
 	try {
 		await app.listen(3000, "0.0.0.0");
-		// app.log.info(`server listening on ${fasitfy.server.address().port}`);
 	} catch (err) {
 		// app.log.error(err);
 		process.exit(1);
