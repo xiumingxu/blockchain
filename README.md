@@ -1,5 +1,5 @@
 # Blockchain Miner Application ("BrezelCoin")
-![BrezelCoin](BrezelCoin.svg)
+![BrezelCoin](imgs/BrezelCoin.svg)
 
 ## Quick Start
 - [Subfolder client](client) includes the src file for the interactive Android application (Minimum platform: Android 9)
@@ -29,7 +29,7 @@ Code reference: https://analysis.null.place/how-do-the-bitcoin-mining-algorithms
 
 ### Mining in Bitcoin 
 
-![Skeleton](2019-10-29-15-35-39.png)
+![Skeleton](imgs/2019-10-29-15-35-39.png)
 From https://en.bitcoin.it/wiki/Block_hashing_algorithm:
 
 *"The mining software constructs a block using the template (described below) and creates a block header. It then sends the 80-byte block header to its mining hardware (an ASIC) along with a target threshold (difficulty setting). The mining hardware iterates through every possible value for the block header nonce and generates the corresponding hash.*
@@ -46,7 +46,8 @@ From https://en.bitcoin.it/wiki/Block_hashing_algorithm:
 [Producer and Consumer](https://kotlinlang.org/docs/reference/coroutines/channels.html)
 
 
-![](2019-10-31-16-53-17.png)
+Implemation from the Client app
+![](imgs/2019-10-31-16-53-17.png)
 
 ### Merkle root
 
@@ -69,7 +70,7 @@ The structure for hashing the transactions.
 [Bit Core Download](https://snapcraft.io/bitcoin-core)
 
 ## Application Demo
-![Android](demo.gif)
+![Android](imgs/demo.gif)
 
  Documents for the implementation are in [client/README.md](client/README.md) and [server/README.md](server/README.md) 
 
