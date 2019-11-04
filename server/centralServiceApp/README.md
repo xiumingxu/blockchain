@@ -1,4 +1,4 @@
-# README
+# README for the server app
 
 ## Deployment on AWS
 - Create an AWS instance:
@@ -8,7 +8,7 @@
     - Add `Custom TCP Rule`, set `Port Range` to `3000` (to be aligned with the Node.js server port we need to have exposed), and set `Source` to `Anywhere` (to be adjusted if additional security mechanisms are added).
     - Launch your instance.
 - On the AWS instance, install Docker + Git, add your user to the group `docker` log out after that (`$` indicates your own environment, and `#` indicates the AWS instance's environment):
-```
+```bash
 $ ssh -i YOUR_PEM_FILE.pem ec2-user@YOUR_AWS_INSTANCE_IP.amazonaws.com
 # sudo yum update -y
 # sudo yum -y install docker git
@@ -16,8 +16,8 @@ $ ssh -i YOUR_PEM_FILE.pem ec2-user@YOUR_AWS_INSTANCE_IP.amazonaws.com
 # sudo usermod -a -G docker ec2-user
 # exit
 ```
-- Now log into your AWS instance again with your new user permissions and start the Node.js server in a custom Docker container:
-```
+- Now log into your AWS instance again with your new user permissions and start the Node.js server in a custom Docker container specified in `Dockerfile`:
+```bash
 $ ssh -i YOUR_PEM_FILE.pem ec2-user@YOUR_AWS_INSTANCE_IP.amazonaws.com
 
 # git clone https://github.com/xiumingxu/blockchain.git
